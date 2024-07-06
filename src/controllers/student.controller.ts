@@ -1,3 +1,2 @@
-   const sum =(a:number,b:number)=> a+b;
-export {sum};
-// export default sum
+export   const sum =(a:number,b:number)=> a+b;
+

@@ -1,3 +1,3 @@
-import {sum as add} from './controllers/student.controller'
+import {sum as add} from './controllers/student.controller';
 
-console.log(add(2,5));
+console.log(add(10,10));
