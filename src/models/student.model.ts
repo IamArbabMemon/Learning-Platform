@@ -16,12 +16,11 @@ import mongoose, { Document, Schema, Model, model } from 'mongoose';
 interface IStudent extends Document {
   username: string;
   email: string;
-  password_hash: string;
+  password: string;
   first_name: string;
   last_name: string;
   date_of_birth?: Date; // Optional
   profile_picture?: string; // Optional
-  created_at: Date;
   updated_at: Date;
   status: 'active' | 'inactive' | 'suspended';
   bio?: string; // Optional
@@ -49,7 +48,7 @@ const studentSchema = new Schema<IStudent>({
     unique: true,
     trim: true, // Good practice to trim whitespace
   },
-  password_hash: {
+  password: {
     type: String,
     required: true,
   },
@@ -97,7 +96,7 @@ const studentSchema = new Schema<IStudent>({
     type: String,
     required: [true,"Contact number must be provided"] // Optional field
   }
-});
+},{timestamps:true});
 
 // Middleware to update the updated_at field
 studentSchema.pre<IStudent>('save', function (next) {
@@ -106,6 +105,6 @@ studentSchema.pre<IStudent>('save', function (next) {
 });
 
 // Create and export the model
-const Student: Model<IStudent> = model<IStudent>('Student', studentSchema);
+const studentModel : Model<IStudent> = model<IStudent>('students', studentSchema);
 
-export default Student;
+export {studentModel};
