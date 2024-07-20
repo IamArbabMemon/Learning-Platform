@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
 import {app} from './app';
 import { DBConnection } from './db/index';
-import dotenv from 'dotenv';
-dotenv.config({path:'./.env'});
+
+dotenv.config({
+    path: './.env'
+})
 
 DBConnection().then(()=>{
     
@@ -14,5 +17,4 @@ DBConnection().then(()=>{
     console.log("ERROR IN CONNECTING THE APP "+error.message)
     
 });
-
 

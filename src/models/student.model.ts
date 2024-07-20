@@ -73,6 +73,7 @@ const studentSchema = new Schema<IStudent>({
   profile_picture: {
     type: String,
     required: false, // Optional field
+    default:null
   },
   
   updated_at: {
