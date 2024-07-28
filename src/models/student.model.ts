@@ -76,11 +76,6 @@ const studentSchema = new Schema<IStudent>({
     default:null
   },
   
-  updated_at: {
-    type: Date,
-    default: Date.now, // Automatically updates the date
-  },
-
   status: {
     type: String,
     enum: ['active', 'inactive', 'suspended'],
@@ -99,11 +94,7 @@ const studentSchema = new Schema<IStudent>({
   }
 },{timestamps:true});
 
-// Middleware to update the updated_at field
-studentSchema.pre<IStudent>('save', function (next) {
-  this.updated_at = new Date();
-  next();
-});
+
 
 // Create and export the model
 const studentModel : Model<IStudent> = model<IStudent>('students', studentSchema);

@@ -64,18 +64,8 @@ const teacherSchema = new Schema<ITeacher>(
     profilePictureUrl: {
       type: String,
       trim: true
-    },
-
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      immutable: true
-    },
-    
-    updatedAt: {
-      type: Date,
-      default: Date.now
     }
+
   },
   {
     timestamps: true // Automatically manage createdAt and updatedAt fields
@@ -83,12 +73,12 @@ const teacherSchema = new Schema<ITeacher>(
 );
 
 // Middleware to update the updatedAt field before saving
-teacherSchema.pre<ITeacher>('save', function (next) {
-  this.updatedAt = new Date();
-  next();
-});
+// teacherSchema.pre<ITeacher>('save', function (next) {
+//   this.updatedAt = new Date();
+//   next();
+// });
 
 // Create a Mongoose model for the Teacher schema
-const Teacher = model<ITeacher>('Teacher', teacherSchema);
+const teacherModel = model<ITeacher>('Teacher', teacherSchema);
 
-export default Teacher;
+export {teacherModel} ;

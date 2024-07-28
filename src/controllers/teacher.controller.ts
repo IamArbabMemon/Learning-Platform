@@ -1,9 +1,8 @@
-import {schema as studentRegistrationSchema} from '../schemas/studentRegisterSchema'
 import { uploadFile } from '../utils/cloudinary';
-import { studentModel } from '../models/student.model';
+import { teacherModel } from '../models/teacher.model';
 import bcrypt from 'bcrypt';
 
-const registerStudent = async(req:any,res:any)=>{
+const registerTeacher = async(req:any,res:any)=>{
         try{
           
             if(!req.body)
@@ -12,10 +11,8 @@ const registerStudent = async(req:any,res:any)=>{
            const data = req.body;     
            let profilePicUrl;
            console.log(data);
-           studentRegistrationSchema.parse(data);
-
-
-           if(await studentModel.findOne({username:data.username})){
+           
+           if(await teacherModel.findOne({username:data.username})){
                 return res.status(400).json({success:false,message:'user already existed'});
            }
 
@@ -28,10 +25,10 @@ const registerStudent = async(req:any,res:any)=>{
 
            data.profile_picture = profilePicUrl;
 
-           const newUser = new studentModel(data);
+           const newUser = new teacherModel(data);
            await newUser.save();
            
-           return res.status(200).json({success:false,message:'STUDENT HAS BEEN REGISTERED SUCCESSFULLY'});
+           return res.status(200).json({success:false,message:'TEACHER HAS BEEN REGISTERED SUCCESSFULLY'});
 
         }catch(error:any){
            console.log(error.message);
@@ -40,5 +37,5 @@ const registerStudent = async(req:any,res:any)=>{
 
 }
 
-export {registerStudent};
+export {registerTeacher};
 
