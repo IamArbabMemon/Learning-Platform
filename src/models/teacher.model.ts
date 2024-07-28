@@ -4,7 +4,7 @@ import { Schema, model, Document } from 'mongoose';
 interface ITeacher extends Document {
   username: string;
   email: string;
-  passwordHash: string;
+  password: string;
   firstName: string;
   lastName: string;
   coursesCreated:Schema.Types.ObjectId[],
@@ -37,10 +37,9 @@ const teacherSchema = new Schema<ITeacher>(
       unique: true,
       trim: true
     },
-    passwordHash: {
+    password: {
       type: String,
-      required: [true, 'Password hash is required.'],
-      minlength: [8, 'Password hash must be at least 8 characters long.']
+      required: [true, 'Password hash is required.']
     },
     firstName: {
       type: String,
