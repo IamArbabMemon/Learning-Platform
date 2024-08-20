@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
-app.use('/api/v1/student',studentRouter);
+app.use('/api/v1/student',studentRouter)
 
 // app.post('/image',upload.fields([{name:'image',maxCount:1}]),async(req:any,res:any)=>{
 //     try {
