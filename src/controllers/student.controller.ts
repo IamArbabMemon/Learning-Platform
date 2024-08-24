@@ -40,5 +40,14 @@ const registerStudent = async(req:any,res:any)=>{
 
 }
 
+const loginStudent = async(req:any,res:any)=>{
+      try{
+
+      }catch(err:any){
+         return res.send(500).json({success:false,error:err.message})
+      }
+}
+
+
 export {registerStudent};
 

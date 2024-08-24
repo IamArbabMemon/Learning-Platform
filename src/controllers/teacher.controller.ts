@@ -28,7 +28,7 @@ const registerTeacher = async(req:any,res:any)=>{
            const newUser = new teacherModel(data);
            await newUser.save();
            
-           return res.status(200).json({success:false,message:'TEACHER HAS BEEN REGISTERED SUCCESSFULLY'});
+           return res.status(200).json({success:true,message:'TEACHER HAS BEEN REGISTERED SUCCESSFULLY'});
 
         }catch(error:any){
            console.log(error.message);

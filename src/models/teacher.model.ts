@@ -10,6 +10,7 @@ interface ITeacher extends Document {
   coursesCreated:Schema.Types.ObjectId[],
   profilePictureUrl?: string;
   country:string;
+  bio?:string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -56,14 +57,22 @@ const teacherSchema = new Schema<ITeacher>(
       {
         type: Schema.Types.ObjectId,
         ref: 'courses' // Reference to the courses collection
-      }
+      },
+
     ],
 
 
     profilePictureUrl: {
       type: String,
-      trim: true
-    }
+      trim: true,
+      default:null
+    },
+
+    bio: {
+      type: String,
+      required: false, // Optional field
+      maxlength: 500, // Limiting bio length
+    },
 
   },
   {

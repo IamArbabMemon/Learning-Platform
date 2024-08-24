@@ -2,6 +2,7 @@
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import {router as studentRouter } from './routes/student.route'
+import {router as teacherRouter} from './routes/teacher.route'
 const app = express();
 
 
@@ -11,6 +12,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 app.use('/api/v1/student',studentRouter);
+app.use('/api/v1/teacher',teacherRouter);
 
 // app.post('/image',upload.fields([{name:'image',maxCount:1}]),async(req:any,res:any)=>{
 //     try {
