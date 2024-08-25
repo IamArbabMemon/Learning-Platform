@@ -17,4 +17,3 @@ DBConnection().then(()=>{
     console.log("ERROR IN CONNECTING THE APP "+error.message)
     
 });
-

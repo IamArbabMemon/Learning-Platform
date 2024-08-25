@@ -11,8 +11,10 @@ interface ITeacher extends Document {
   profilePictureUrl?: string;
   country:string;
   bio?:string;
+  role:'Student' | 'Teacher' | 'Admin';
   createdAt: Date;
   updatedAt: Date;
+
 
 }
 

@@ -26,6 +26,8 @@ interface IStudent extends Document {
   bio?: string; // Optional
   contact_number?: string; // Optional
   country:string
+  role: 'Student' | 'Teacher' | 'Admin';
+  
 }
 
 // Create the schema corresponding to the document interface
@@ -86,6 +88,12 @@ const studentSchema = new Schema<IStudent>({
     type: String,
     required: false, // Optional field
     maxlength: 500, // Limiting bio length
+  },
+
+  role:{
+    type: String,
+    // enum: ['Student', 'Teacher', ''],
+    default: null,
   },
 
   contact_number: {

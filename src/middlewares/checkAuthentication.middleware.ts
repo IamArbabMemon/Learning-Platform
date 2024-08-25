@@ -3,7 +3,8 @@ import { ErrorResponse } from '../utils/ErrorResponse';
 
 interface JwtPayLoad{
     username:string,
-    userID:string
+    userID:string,
+    userRole?: string | null
 }
 
 export const checkAuthentication = (req:any,res:any,next:any)=>{

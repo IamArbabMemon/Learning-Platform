@@ -76,7 +76,7 @@ const loginStudent = async(req:any,res:any,next:any)=>{
          
          return res.cookie('token', token, {
             httpOnly: true,
-        }).json({message:"Access token has been set",token, userData:{username,userID:user._id}});
+        }).json({message:"Access token has been set",token, userData:{username,userID:user._id,userRole:user.role}});
   
       //console.log('After throw');
 
@@ -93,7 +93,7 @@ const studentLogout = async(req:any,res:any,next:any)=>{
    try{
 
             if(!req.user)
-               throw new ErrorResponse('User was not login or authenticated',400);
+               throw new ErrorResponse('User is not logged in or authenticated',400);
 
               // Clear the token from the cookie
               res.clearCookie('token', {
@@ -107,6 +107,17 @@ const studentLogout = async(req:any,res:any,next:any)=>{
    }catch(err){
       next(err);
    }
+};
+
+
+const studentForgetPassword = async(req:any,res:any,next:any)=>{
+   try{
+
+      if(req)
+
+   }catch(err){
+      next(err)
+   }
 }
 
 
@@ -115,6 +126,7 @@ const studentLogout = async(req:any,res:any,next:any)=>{
 
 export {
    registerStudent,
-   loginStudent
+   loginStudent,
+   studentLogout
 };
 
