@@ -100,15 +100,15 @@ const courseSchema = new Schema<ICourse>(
     },
 
    
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      immutable: true
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now
-    }
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now,
+    //   immutable: true
+    // },
+    // updatedAt: {
+    //   type: Date,
+    //   default: Date.now
+    // }
   },
   {
     timestamps: true // Automatically manage createdAt and updatedAt fields

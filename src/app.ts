@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import {router as studentRouter } from './routes/student.route'
 import {router as teacherRouter} from './routes/teacher.route'
+import {errorHandler} from './middlewares/errorHandlingMiddleware'
 const app = express();
 
 
@@ -31,5 +32,5 @@ app.use('/api/v1/teacher',teacherRouter);
 //     }
 // })
 
-
+app.use(errorHandler)
 export {app};

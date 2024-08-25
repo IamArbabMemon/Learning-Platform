@@ -1,6 +1,14 @@
+import dotenv from 'dotenv'
 import { uploadFile } from '../utils/cloudinary';
 import { teacherModel } from '../models/teacher.model';
 import bcrypt from 'bcrypt';
+import { ErrorResponse } from "../utils/ErrorResponse";
+import jwt from 'jsonwebtoken'
+
+dotenv.config({
+   path:'./.env'
+})
+
 
 const registerTeacher = async(req:any,res:any)=>{
         try{
@@ -37,5 +45,45 @@ const registerTeacher = async(req:any,res:any)=>{
 
 }
 
-export {registerTeacher};
+
+const loginTeacher = async(req:any,res:any,next:any)=>{
+   try{
+
+      // if(!req.body)
+      //    throw new ErrorResponse('Request body not available',400);
+      
+      const {username,password} = req.body;
+
+      if(!username || !password)
+         throw new ErrorResponse('login Credentials are missing',400);
+
+      const user = await teacherModel.findOne({username});
+
+      if(!user)
+         throw new ErrorResponse('User Not Found',404);
+
+      const passIsCorrect = await bcrypt.compare(password,user.password);
+
+      if(!passIsCorrect)
+         throw new ErrorResponse('Incorrect password',404);
+
+       if(!process.env.JWT_SECRET_KEY)
+         throw new ErrorResponse('ENVIRONMENT VARIABLE ARE NOT LOADED PROPERPLY PLEASE CHECK YOUR .env FILE',500);
+
+      const token = await jwt.sign({username,studentID:user._id}, process.env.JWT_SECRET_KEY);
+      
+      return res.cookie('token', token, {
+         httpOnly: true,
+     }).json({message:"Access token has been set",token, userData:{username,studentID:user._id}});
+
+   }catch(err:any){
+      next(err);
+   }
+}
+
+
+export {
+   registerTeacher,
+   loginTeacher
+};
 
