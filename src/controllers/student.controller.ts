@@ -72,11 +72,11 @@ const loginStudent = async(req:any,res:any,next:any)=>{
           if(!process.env.JWT_SECRET_KEY)
             throw new ErrorResponse('ENVIRONMENT VARIABLE ARE NOT LOADED PROPERPLY PLEASE CHECK YOUR .env FILE',500);
 
-         const token = await jwt.sign({username,studentID:user._id}, process.env.JWT_SECRET_KEY);
+         const token = await jwt.sign({username,userID:user._id}, process.env.JWT_SECRET_KEY);
          
          return res.cookie('token', token, {
             httpOnly: true,
-        }).json({message:"Access token has been set",token, userData:{username,studentID:user._id}});
+        }).json({message:"Access token has been set",token, userData:{username,userID:user._id}});
   
       //console.log('After throw');
 
@@ -85,7 +85,32 @@ const loginStudent = async(req:any,res:any,next:any)=>{
       }catch(err:any){
          next(err);
       }
+};
+
+
+
+const studentLogout = async(req:any,res:any,next:any)=>{
+   try{
+
+            if(!req.user)
+               throw new ErrorResponse('User was not login or authenticated',400);
+
+              // Clear the token from the cookie
+              res.clearCookie('token', {
+               httpOnly: true
+           });
+   
+           // Send response confirming logout
+           res.status(200).json({ message: "You have successfully logged out." });
+
+
+   }catch(err){
+      next(err);
+   }
 }
+
+
+
 
 
 export {
