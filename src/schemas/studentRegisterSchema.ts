@@ -9,7 +9,8 @@ const schema = z.object({
    //date_of_birth:z.date(),
    bio:z.string(),
    contact_number:z.string().min(11).max(11),
-   country:z.string()
+   country:z.string(),
+  role:z.string()
 });
 
 export {

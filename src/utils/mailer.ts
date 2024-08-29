@@ -34,3 +34,36 @@ const sendWelcomeMail = async (user:{username:string,email:string})=>{
     }
 
 };
+
+const sendOTPMail = async (user:{username:string,email:string},linkToProvide :string)=>{
+    
+    let textToSend = `Click here to reset password : ${linkToProvide}`;
+    textToSend = textToSend.replace("[User]",user.username);
+    
+    try{
+        
+        const info = await transporter.sendMail({
+            from: {
+                name:`UNIQUE LEARNING PLATFORM Team`,
+                address:'arbabhere41@gmail.com'
+        }, // sender address
+            to: user.email, // list of receivers
+            subject: "RESET PASSWORD REQUEST", // Subject line
+            text: textToSend, // plain text body
+            html:""// html body
+          });
+
+          return info;
+          
+      }catch(err){
+        console.log("FAILED TO SEND EMAIL" , err);
+        return null;
+    }
+
+};
+
+
+export {
+    sendOTPMail,
+    sendWelcomeMail
+}
