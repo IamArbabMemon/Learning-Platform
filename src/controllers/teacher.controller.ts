@@ -4,6 +4,9 @@ import { teacherModel } from '../models/teacher.model';
 import bcrypt from 'bcrypt';
 import { ErrorResponse } from "../utils/ErrorResponse";
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
+import { redisClient } from '../db/redisClient';
+import { sendOTPMail } from '../utils/mailer';
 
 dotenv.config({
    path:'./.env'
@@ -81,9 +84,93 @@ const loginTeacher = async(req:any,res:any,next:any)=>{
    }
 }
 
+const teacherLogout = async(req:any,res:any,next:any)=>{
+   try{
+
+            if(!req.user)
+               throw new ErrorResponse('User is not logged in or authenticated',400);
+
+              // Clear the token from the cookie
+              res.clearCookie('token', {
+               httpOnly: true
+           });
+   
+           // Send response confirming logout
+           res.status(200).json({ message: "You have successfully logged out." });
+
+
+   }catch(err){
+      next(err);
+   }
+};
+
+
+const teacherSendOTP = async(req:any,res:any,next:any)=>{
+   try{
+         const user = req.user;
+      if(!user)
+         throw new ErrorResponse('user is not authenticated',400);
+
+         const token = crypto.randomBytes(32).toString('hex');
+
+      const link = `${req.protocol}://${req.get('host')}/api/v1/teacher/forget-password/${token}`;
+
+
+   await redisClient.set(`resetToken:${token}`, user.userID, {
+         EX: 1800, 
+     });
+
+
+    const result = await sendOTPMail({username:user.username,email:user.userEmail},link);
+    console.log(result);       
+
+     return res.json({success:true,message:"otp email has been sent successfully"});
+
+   }catch(err){
+      next(err)
+   }
+}
+
+
+
+const teacherSetNewPassword = async(req:any,res:any,next:any)=>{
+   try{
+      
+      const extractedToken = req.params.token;
+
+      const {newPassword} = req.body;
+
+      if(!newPassword)
+         throw new ErrorResponse('new password is missing from request body',400);
+
+      if(!extractedToken)
+         throw new ErrorResponse('Token is missing from request url',400);
+
+      const userID = await redisClient.get(`resetToken:${extractedToken}`);
+
+      const hashedNewPassword = await bcrypt.hash(newPassword,10);
+
+      //const hashedPass = await bcrypt.hash(data.password,10);
+
+      const result = await teacherModel.findByIdAndUpdate(userID,{password:hashedNewPassword});
+
+      console.log(result);
+
+      return res.json({success:true,message:"PASSWORD HAS BEEN UPDATED SUCCESSFULLY"});
+
+   }catch(err){
+      next(err);
+   }
+}
+
+
+
 
 export {
    registerTeacher,
-   loginTeacher
+   loginTeacher,
+   teacherSendOTP,
+   teacherSetNewPassword,
+   teacherLogout
 };
 
