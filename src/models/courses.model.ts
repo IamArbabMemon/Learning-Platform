@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, model, Document } from 'mongoose';
 
 // Define an interface representing a document in MongoDB.
 interface ICourse extends Document {
@@ -81,15 +81,32 @@ const courseSchema = new Schema<ICourse>(
       }
     ],
 
+    // progress: {
+    //   type: Map,
+    //   of: Number,
+    //   default: {}, // Maps studentId to their progress percentage
+    //   validate: {
+    //     validator: function (progress: Record<string, number>) {
+    //       return Object.values(progress).every(value => value >= 0 && value <= 100);
+    //     },
+    //     message: 'Progress values must be between 0 and 100.'
+    //   }
+    // },
     progress: {
       type: Map,
       of: Number,
-      default: {}, // Maps studentId to their progress percentage
+      default: {}, // Maps studentObjectId to their progress percentage
       validate: {
-        validator: function (progress: Record<string, number>) {
-          return Object.values(progress).every(value => value >= 0 && value <= 100);
+        validator: function (progress:Map<string,number>):boolean {
+          // Ensure all values are between 0 and 100
+          const valuesValid = Object.values(progress).every(value => value >= 0 && value <= 100);
+          
+          // Ensure all keys are valid ObjectId strings
+          const keysValid = Array.from(progress.keys()).every(key => mongoose.Types.ObjectId.isValid(key));
+  
+          return valuesValid && keysValid;
         },
-        message: 'Progress values must be between 0 and 100.'
+        message: 'Progress values must be between 0 and 100, and all keys must be valid ObjectIds.'
       }
     },
 
