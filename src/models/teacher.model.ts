@@ -76,6 +76,10 @@ const teacherSchema = new Schema<ITeacher>(
       maxlength: 500, // Limiting bio length
     },
 
+    role:{
+      type:String
+    }
+
   },
   {
     timestamps: true // Automatically manage createdAt and updatedAt fields

@@ -163,6 +163,39 @@ const teacherSetNewPassword = async(req:any,res:any,next:any)=>{
    }
 }
 
+const getAllTeachers = async(req:any,res:any,next:any)=>{
+
+   try {
+
+      if(!(req.user.role==='Admin'))
+         throw new ErrorResponse('unauthorized request',400);
+      
+      const allTeachers = await teacherModel.find();
+      return res.json({success:true,data:allTeachers});
+
+   } catch (error:any) {
+      next(error);
+   }
+}
+
+const getTeacherByID = async(req:any,res:any,next:any)=>{
+
+   try {
+      if(!(req.user.role==='Admin'))
+         throw new ErrorResponse('unauthorized request',400);
+
+      if(!req.params.teacherID)
+         throw new ErrorResponse('teacherID is missing from parameters',400);
+
+      const teacher = await teacherModel.findById(req.params.teacherID);
+
+      return res.json({success:true,data:teacher});
+
+   } catch (error:any) {
+      next(error);
+   }
+}
+
 
 
 
@@ -171,6 +204,8 @@ export {
    loginTeacher,
    teacherSendOTP,
    teacherSetNewPassword,
-   teacherLogout
+   teacherLogout,
+   getAllTeachers,
+   getTeacherByID
 };
 

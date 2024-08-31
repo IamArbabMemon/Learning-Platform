@@ -175,8 +175,38 @@ const studentSetNewPassword = async(req:any,res:any,next:any)=>{
    }
 }
 
+const getAllStudents = async(req:any,res:any,next:any)=>{
 
+   try {
 
+      if(!(req.user.role==='Teacher'))
+         throw new ErrorResponse('unauthorized request',400);
+      
+      const allStudents = await studentModel.find();
+      return res.json({success:true,data:allStudents});
+
+   } catch (error:any) {
+      next(error);
+   }
+}
+
+const getStudentByID = async(req:any,res:any,next:any)=>{
+
+   try {
+      if(!(req.user.role==='Teacher'))
+         throw new ErrorResponse('unauthorized request',400);
+
+      if(!req.params.studentID)
+         throw new ErrorResponse('studentID is missing from parameters',400);
+
+      const student = await studentModel.findById(req.params.studentID);
+
+      return res.json({success:true,data:student});
+
+   } catch (error:any) {
+      next(error);
+   }
+}
 
 
 
@@ -187,6 +217,8 @@ export {
    loginStudent,
    studentLogout,
    studentSendOTP,
-   studentSetNewPassword
+   studentSetNewPassword,
+   getAllStudents,
+   getStudentByID
 };
 

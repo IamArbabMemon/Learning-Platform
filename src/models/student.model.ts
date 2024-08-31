@@ -27,6 +27,7 @@ interface IStudent extends Document {
   contact_number?: string; // Optional
   country:string
   role: 'Student' | 'Teacher' | 'Admin';
+  purchasedCourses:Schema.Types.ObjectId[];
   
 }
 
@@ -99,7 +100,15 @@ const studentSchema = new Schema<IStudent>({
   contact_number: {
     type: String,
     required: [true,"Contact number must be provided"] // Optional field
-  }
+  },
+
+  purchasedCourses:[
+    {
+       type: Schema.Types.ObjectId,
+        ref: 'courses'
+    }
+  ]
+  
 },{timestamps:true});
 
 
