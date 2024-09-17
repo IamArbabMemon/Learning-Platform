@@ -9,7 +9,7 @@ interface ICourse extends Document {
   teacher: Schema.Types.ObjectId; // Reference to the Teacher
   lessons: ILesson[];
   enrolledStudents: Schema.Types.ObjectId[]; // References to Students
-  progress: Record<string, number>; // Mapping studentId to progress percentage
+  progress: Record<string, number> | null; // Mapping studentId to progress percentage
   price: number;
   createdAt: Date;
   updatedAt: Date;
@@ -50,7 +50,7 @@ const courseSchema = new Schema<ICourse>(
     },
     teacher: {
       type: Schema.Types.ObjectId,
-      ref: 'teachers', // Reference to the Teacher collection
+      ref: 'teacher', // Reference to the Teacher collection
       required: true
     },
     lessons: [
@@ -72,7 +72,7 @@ const courseSchema = new Schema<ICourse>(
           type: Number,
           min: [0, 'Duration must be a positive number.'] // Optional field
         }
-      }
+      },
     ],
     enrolledStudents: [
       {
@@ -92,23 +92,23 @@ const courseSchema = new Schema<ICourse>(
     //     message: 'Progress values must be between 0 and 100.'
     //   }
     // },
-    progress: {
-      type: Map,
-      of: Number,
-      default: {}, // Maps studentObjectId to their progress percentage
-      validate: {
-        validator: function (progress:Map<string,number>):boolean {
-          // Ensure all values are between 0 and 100
-          const valuesValid = Object.values(progress).every(value => value >= 0 && value <= 100);
+    // progress: {
+    //   type: Map,
+    //   of: Number,
+    //   default: {}, // Maps studentObjectId to their progress percentage
+    //   validate: {
+    //     validator: function (progress:Map<string,number>):boolean {
+    //       // Ensure all values are between 0 and 100
+    //       const valuesValid = Object.values(progress).every(value => value >= 0 && value <= 100);
           
-          // Ensure all keys are valid ObjectId strings
-          const keysValid = Array.from(progress.keys()).every(key => mongoose.Types.ObjectId.isValid(key));
+    //       // Ensure all keys are valid ObjectId strings
+    //       const keysValid = Array.from(progress.keys()).every(key => mongoose.Types.ObjectId.isValid(key));
   
-          return valuesValid && keysValid;
-        },
-        message: 'Progress values must be between 0 and 100, and all keys must be valid ObjectIds.'
-      }
-    },
+    //       return valuesValid && keysValid;
+    //     },
+    //     message: 'Progress values must be between 0 and 100, and all keys must be valid ObjectIds.'
+    //   }
+    // },
 
     price: {
       type: Number,
@@ -128,7 +128,7 @@ const courseSchema = new Schema<ICourse>(
     // }
   },
   {
-    timestamps: true // Automatically manage createdAt and updatedAt fields
+    timestamps: true 
   }
 );
 

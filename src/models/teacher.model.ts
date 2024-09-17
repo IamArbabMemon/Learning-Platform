@@ -93,6 +93,6 @@ const teacherSchema = new Schema<ITeacher>(
 // });
 
 // Create a Mongoose model for the Teacher schema
-const teacherModel = model<ITeacher>('Teacher', teacherSchema);
+const teacherModel = model<ITeacher>('teacher', teacherSchema);
 
 export {teacherModel} ;

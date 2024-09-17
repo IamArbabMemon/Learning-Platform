@@ -9,6 +9,23 @@ import { ErrorResponse } from "../utils/ErrorResponse";
 import crypto from 'crypto'
 import { sendOTPMail } from '../utils/mailer';
 import { redisClient } from '../db/redisClient';
+import { Queue } from 'bullmq';
+
+// const queue = new Queue('mailQue', {
+//   connection: {
+//     host: 'localhost',
+//     port: 6379,
+//   },
+// });
+
+// async function addJobs() {
+//   for (let i = 0; i < 10; i++) {
+//     await queue.add('myJob', { jobData: `Job ${i}` });
+//   }
+// }
+
+//addJobs();
+
 
 
 dotenv.config({
@@ -79,11 +96,11 @@ const loginStudent = async(req:any,res:any,next:any)=>{
           if(!process.env.JWT_SECRET_KEY)
             throw new ErrorResponse('ENVIRONMENT VARIABLE ARE NOT LOADED PROPERPLY PLEASE CHECK YOUR .env FILE',500);
 
-         const token = await jwt.sign({username,userID:user._id,userRole:user.role,userEmail:user.email}, process.env.JWT_SECRET_KEY);
+         const token = await jwt.sign({username,userID:user._id,role:user.role,userEmail:user.email}, process.env.JWT_SECRET_KEY);
          
          return res.cookie('token', token, {
             httpOnly: true,
-        }).json({message:"Access token has been set",token, userData:{username,userID:user._id,userRole:user.role}});
+        }).json({message:"Access token has been set",token, userData:{username,userID:user._id,role:user.role}});
 
 
       }catch(err:any){
@@ -116,30 +133,45 @@ const studentLogout = async(req:any,res:any,next:any)=>{
 
 const studentSendOTP = async(req:any,res:any,next:any)=>{
    try{
-         const user = req.user;
-      if(!user)
-         throw new ErrorResponse('user is not authenticated',400);
 
-         const token = crypto.randomBytes(32).toString('hex');
+      console.log(req.body);
+
+      //    const user = req.user;
+      if(!req.body.username)
+         throw new ErrorResponse('username is missing from request body',400);
+
+      const user = await studentModel.findOne({username:req.body.username});
+        
+      if(!user)
+         throw new ErrorResponse('user not found',400);
+        
+        const token = crypto.randomBytes(32).toString('hex');
 
       const link = `${req.protocol}://${req.get('host')}/api/v1/student/forget-password/${token}`;
+
+         
+
+   
 
       //await redisClient.set(`resetToken:${token}`, user._id.toString(), 'EX', 3600);
    //    await redisClient.set('resetToken:' + token, 'id5454', {
    //       EX: 3600, // Expiration time in seconds (1 hour)
    //   });
-
-   await redisClient.set(`resetToken:${token}`, user.userID, {
+console.log(link)
+      if(typeof user._id ==='string')
+         
+   await redisClient.set(`resetToken:${token}`, user._id, {
          EX: 1800, // Expiration time in seconds (1 hour)
      });
 
 
-    const result = await sendOTPMail({username:user.username,email:user.userEmail},link);
+    const result = await sendOTPMail({username:user.username,email:user.email},link); //await queue.add('myJob', { jobData:{ username:user.username,email:user.email,link:link}} ); 
     console.log(result);       
 
      return res.json({success:true,message:"otp email has been sent successfully"});
 
    }catch(err){
+      //console.log(err);
       next(err)
    }
 }
@@ -182,7 +214,7 @@ const getAllStudents = async(req:any,res:any,next:any)=>{
       if(!(req.user.role==='Teacher'))
          throw new ErrorResponse('unauthorized request',400);
       
-      const allStudents = await studentModel.find();
+      const allStudents = await studentModel.find().select('-password');
       return res.json({success:true,data:allStudents});
 
    } catch (error:any) {

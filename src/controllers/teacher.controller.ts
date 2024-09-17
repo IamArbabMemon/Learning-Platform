@@ -73,11 +73,11 @@ const loginTeacher = async(req:any,res:any,next:any)=>{
        if(!process.env.JWT_SECRET_KEY)
          throw new ErrorResponse('ENVIRONMENT VARIABLE ARE NOT LOADED PROPERPLY PLEASE CHECK YOUR .env FILE',500);
 
-      const token = await jwt.sign({username,userID:user._id,userRole:user.role,userEmail:user.email}, process.env.JWT_SECRET_KEY);
+      const token = await jwt.sign({username,userID:user._id,role:user.role,userEmail:user.email}, process.env.JWT_SECRET_KEY);
       
       return res.cookie('token', token, {
          httpOnly: true,
-     }).json({message:"Access token has been set",token, userData:{username,userID:user._id,userRole:user.role}});
+     }).json({message:"Access token has been set",token, userData:{username,userID:user._id,role:user.role}});
 
    }catch(err:any){
       next(err);

@@ -13,10 +13,10 @@ router.route('/login').post(loginStudent);
 
 router.route('/logout').get(checkAuthentication,studentLogout);
 
-router.route('/sendOTP').get(checkAuthentication,studentSendOTP);
+router.route('/sendOTP').get(studentSendOTP);
 
 
-router.route('/forget-password/:token').post(checkAuthentication,studentSetNewPassword);
+router.route('/forget-password/:token').post(studentSetNewPassword);
 
 router.route('/getAllStudents').get(checkAuthentication,getAllStudents);
 
