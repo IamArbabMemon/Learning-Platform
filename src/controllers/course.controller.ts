@@ -1,3 +1,4 @@
+import { redisClient } from '../db/redisClient';
 import course from '../models/courses.model';
 import courseModel from '../models/courses.model';
 import { ErrorResponse } from '../utils/ErrorResponse';
@@ -66,8 +67,63 @@ const getAllCourses = async(req:any,res:any,next:any)=>{
     }
 }
 
+const getCourseByID = async(req:any,res:any,next:any)=>{
+
+       try {
+        const {courseID} = req.query;
+        
+        console.log(courseID);
+
+        if(!courseID)
+            throw new ErrorResponse('course id is missing from query parameters',400);
+
+        let getFromCache = await redisClient.get(courseID);
+        
+        if(getFromCache){
+            
+            return res.status(200).json(JSON.parse(getFromCache));
+        }
+
+
+        console.log('after');
+        const getFromDB = await courseModel.findById(courseID);
+    
+        if(!getFromDB)
+            throw new ErrorResponse('Invalid ID course not found',400);
+
+        await redisClient.set(courseID,JSON.stringify(getFromDB));
+        return res.status(200).json(getFromDB);
+
+       
+
+        // course = await courseModel.findById(courseID); // if result is not found in redis then look in database
+
+        // if(course){ // if course found in database note : just to make a check that given id is correct
+        
+        // await redisClient.set(courseID,course);
+        //    return res.status(200).json(course);      
+        
+        // }else{
+        //     throw new ErrorResponse('Invalid course ID . Course not found',400);
+        // }
+
+
+//66e9631e74 34 32 d91 d42 43 10
+
+        // const data = await courseModel.findById(courseID);
+        // return res.json(data);
+
+       } catch (error:any) {
+        next(error);
+       }
+             
+
+}
+
+
 
 export{
     createCourse,
-    getAllCourses
+    getAllCourses,
+    getCourseByID
 }
