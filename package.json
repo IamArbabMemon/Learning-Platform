@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
     "@types/redis": "^4.0.11",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.12.12",

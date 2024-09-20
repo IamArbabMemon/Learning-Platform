@@ -94,24 +94,6 @@ const getCourseByID = async(req:any,res:any,next:any)=>{
         await redisClient.set(courseID,JSON.stringify(getFromDB));
         return res.status(200).json(getFromDB);
 
-       
-
-        // course = await courseModel.findById(courseID); // if result is not found in redis then look in database
-
-        // if(course){ // if course found in database note : just to make a check that given id is correct
-        
-        // await redisClient.set(courseID,course);
-        //    return res.status(200).json(course);      
-        
-        // }else{
-        //     throw new ErrorResponse('Invalid course ID . Course not found',400);
-        // }
-
-
-//66e9631e74 34 32 d91 d42 43 10
-
-        // const data = await courseModel.findById(courseID);
-        // return res.json(data);
 
        } catch (error:any) {
         next(error);
@@ -120,6 +102,18 @@ const getCourseByID = async(req:any,res:any,next:any)=>{
 
 }
 
+
+const addLesson = async(req:any,res:any,next:any)=>{
+    try {
+        
+        
+        
+
+
+    } catch (error:any) {
+        next(error);  
+    }
+}
 
 
 export{
