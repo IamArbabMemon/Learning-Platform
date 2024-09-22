@@ -61,8 +61,7 @@ const courseSchema = new Schema<ICourse>(
           trim: true
         },
         content: {
-          type: String,
-          required: [true, 'Lesson content is required.']
+          type: String
         },
         videoUrl: {
           type: String,
@@ -133,10 +132,10 @@ const courseSchema = new Schema<ICourse>(
 );
 
 // Middleware to update the updatedAt field before saving
-courseSchema.pre<ICourse>('save', function (next) {
-  this.updatedAt = new Date();
-  next();
-});
+// courseSchema.pre<ICourse>('save', function (next) {
+//   this.updatedAt = new Date();
+//   next();
+// });
 
 // Create a Mongoose model for the Course schema
 const course = model<ICourse>('Course', courseSchema);

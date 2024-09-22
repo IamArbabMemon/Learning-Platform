@@ -11,35 +11,65 @@ const supabaseKey = process.env.SUPABASE_SERVICE_KEY
 if(supabaseUrl && supabaseKey)
  supabaseVideoUploader = createClient(supabaseUrl, supabaseKey);
 
-const uploadVideoOnSupabaseStorage = async(videoPath:string,fileName:string)=>{
-    try {
-        // Read the video file from the local filesystem
-        const videoBuffer = await fs.readFile(videoPath);
+// const uploadVideoOnSupabaseStorage = async(videoPath:string,fileName:string)=>{
+//     try {
+//         // Read the video file from the local filesystem
+//         const videoBuffer = await fs.readFile(videoPath);
     
-        // Upload the video file to Supabase storage bucket
-        const { data, error } = await supabaseVideoUploader
-          .storage
-          .from('Videos')
-          .upload('lesson1/', videoBuffer, {
-            contentType: 'video/mp4',
+//         // Upload the video file to Supabase storage bucket
+//         const { data, error } = await supabaseVideoUploader
+//           .storage
+//           .from('Videos')
+//           .upload('lesson1/', videoBuffer, {
+//             contentType: 'video/mp4',
+//             cacheControl: '3600', // Cache for 1 hour
+//             upsert: false, // Do not overwrite existing files
+//           });
+    
+//         if (error) {
+//           throw error;
+//         }
+    
+//         console.log('Video uploaded successfully:', data);
+//         return data;
+    
+//       } catch (error) {
+//         console.error('Error uploading video:', error.message);
+//         throw error;
+//       }
+
+const uploadVideo = async(videoName:string,videoType:string,path:string)=>{
+
+
+  try {
+
+  
+    const videoBuffer = await fs.readFile(path);
+    // Upload the video file to Supabase storage bucket
+    const { data, error } = await supabaseVideoUploader
+        .storage
+        .from('Videos')
+        .upload(videoName, videoBuffer, {
+            contentType: videoType, // Specify the content type for video
             cacheControl: '3600', // Cache for 1 hour
-            upsert: false, // Do not overwrite existing files
-          });
-    
-        if (error) {
-          throw error;
-        }
-    
-        console.log('Video uploaded successfully:', data);
-        return data;
-    
-      } catch (error) {
-        console.error('Error uploading video:', error.message);
+            upsert: false // Do not overwrite existing files
+        });
+
+    if (error) {
         throw error;
-      }
+    }
+
+    console.log('Video uploaded successfully:', data);
+    fs.unlink(path);
+    return data;
+} catch (error:any) {
+    console.error('Error uploading video:', error.message);
 }
+
+};
+
 
 
 export {
-    supabaseVideoUploader
+    uploadVideo
 }

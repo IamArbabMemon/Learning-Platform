@@ -2,6 +2,7 @@ import { redisClient } from '../db/redisClient';
 import course from '../models/courses.model';
 import courseModel from '../models/courses.model';
 import { ErrorResponse } from '../utils/ErrorResponse';
+import { uploadVideo } from '../utils/supabaseVideoUploader';
 
 
 const createCourse = async(req:any,res:any,next:any)=>{
@@ -106,9 +107,32 @@ const getCourseByID = async(req:any,res:any,next:any)=>{
 const addLesson = async(req:any,res:any,next:any)=>{
     try {
         
-        
-        
+//        const {title,content,courseID} = req.body;
+        const { title, content, courseID }: { title: string; content: string; courseID: number } = req.body;
 
+        if(!req.files.lessonVideo[0])
+            throw new ErrorResponse("video file is missing",400);
+  
+        const course = await courseModel.findById(courseID);
+        
+        if(!course)
+            throw new ErrorResponse("Invalid courseID , course is not found",400);
+
+
+
+  const path = req.files.lessonVideo[0].path;
+  const mimeType  =  req.files.lessonVideo[0].mimetype;
+  const teacherName = req.user.username;  
+  const videoName = `${teacherName}/${course.title}/${title}/${req.files.lessonVideo[0].filename}`
+  const result =   await uploadVideo(videoName,mimeType,path);
+
+  if(!result)
+    throw new ErrorResponse("Failed to upload video",500);
+
+  course.lessons.push({title,content,videoUrl:result.path}); 
+  
+
+  return res.status(200).json({message:"Lesson has been uploaded Successfully",success:true});
 
     } catch (error:any) {
         next(error);  
@@ -119,5 +143,6 @@ const addLesson = async(req:any,res:any,next:any)=>{
 export{
     createCourse,
     getAllCourses,
-    getCourseByID
+    getCourseByID,
+    addLesson
 }
